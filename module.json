@@ -1,0 +1,45 @@
+{
+    "id": "ursa-major",
+    "title": "Ursa Major",
+    "description": "The Destruction Bench Agreement companion module for ACFVTT.",
+    "authors": [
+        {
+            "name": "Holipop",
+            "discord": "@holipop"
+        }
+    ],
+    "version": "v1.0",
+    "compatibility": {
+        "minimum": "11",
+        "verified": "11.313"
+    },
+    "esmodules": [
+        "ursa-major.js"
+    ],
+    "styles": [
+        "ursa-major.css"
+    ],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ],
+    "relationships": {
+        "systems": [
+            {
+                "id": "animecampaign",
+                "type": "system",
+                "compatibility": [
+                    {
+                        "minimum": "1.0",
+                        "verified": "1.0"
+                    }
+                ]
+            }
+        ]
+    },
+    "manifest": "https://github.com/holipop/ursa-major/releases/download/1.0/module.json",
+    "download": "https://github.com/holipop/ursa-major/releases/download/1.0/ursa-major.zip"
+}
