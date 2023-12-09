@@ -8,7 +8,7 @@
             "discord": "@holipop"
         }
     ],
-    "version": "v1.0",
+    "version": "v0.1",
     "compatibility": {
         "minimum": "11",
         "verified": "11.313"
@@ -40,6 +40,6 @@
             }
         ]
     },
-    "manifest": "https://github.com/holipop/ursa-major/releases/download/1.0/module.json",
-    "download": "https://github.com/holipop/ursa-major/releases/download/1.0/ursa-major.zip"
+    "manifest": "https://github.com/holipop/ursa-major/releases/download/0.1/module.json",
+    "download": "https://github.com/holipop/ursa-major/releases/download/0.1/ursa-major.zip"
 }
