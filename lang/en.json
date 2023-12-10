@@ -1,7 +1,3 @@
 {
-"UMa": {
-    "ERROR": {
-        "InvalidEvent": "\"{hook}\" is not a valid event."
-    }
-}
+"UMa": {}
 }

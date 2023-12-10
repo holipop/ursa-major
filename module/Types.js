@@ -3,8 +3,6 @@
  */
 
 
-import * as Utils from './Utils.js'
-
 /** A enumeration of event types. If you're into that kinda thing.
  * @enum {String}
  */
@@ -13,37 +11,50 @@ export const Event = {
     Roll: 'roll',
 }
 
-/** An object containing character-specific mechanics.
+/** A class for strictly containing events.
+ * @class
+ */
+class EventData {
+    constructor(id, hook, fn) {
+        this.id = id
+        this.hook = hook
+        this.fn = fn
+    }
+}
+
+/** An class containing character-specific mechanics.
  * @class
  */
 export class Record {
-    #id;
-    #actor;
-    #events = new Map();
+    #player
+    #character
+    #events = new Map()
 
-    constructor (id) {
-        this.#id = id
-        this.#actor = game.actors.get(id)
+    constructor (player, character) {
+        this.#player = player
+        this.#character = character
     }
 
-    get id () { return this.#id }
-    get actor () { return this.#actor }
-    get name () { return this.#actor.name }
-    get flags () { return this.#actor.flags.UMa }
+    get character () { return this.#character }
+    get player () { return this.#player }
     get events () { return this.#events }
 
-    /** Adds an event entry to this record.
-     * @param {String} event 
-     * @param {String} id 
-     * @param {Function} fn 
+    /** 
+     * @param {EventData[]} events 
      */
-    addEvent (event, id, fn) {
-        if (Object.values(Event).includes(hook)) {
-            this.#events.set(id, { id, hook, fn })
-        } else {
-            throw new Error(game.i18n.format("UMa.ERROR.InvalidEvent", { hook }))
+    addEvents (events = []) {
+        if (!events.length) {
+            throw new TypeError("Cannot pass empty array into Record#addEvents")
+        }
+        for (const {id, hook, fn} of events) {
+            if (Object.values(Event).includes(hook)) {
+                this.#events.set(id, new EventData(id, hook, fn))
+            } else {
+                throw new Error(`${hook} is not a valid event.`)
+            }
         }
     }
+
 }
 
 /** A mixin for creating an UrsaMajor Item.
