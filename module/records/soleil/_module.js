@@ -1,1 +1,1 @@
-export { Melograno } from './Melograno.js'
+export { Melo as Melograno } from './Melograno.js'

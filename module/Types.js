@@ -6,12 +6,12 @@
 /** A enumeration of event types. If you're into that kinda thing.
  * @enum {String}
  */
-export const Event = {
+export const Event = Object.freeze({
     Macro: 'macro',
     Roll: 'roll',
-}
+})
 
-/** A class for strictly containing events.
+/** A class for strictly containing event data.
  * @class
  */
 class EventData {
@@ -29,6 +29,9 @@ export class Record {
     #player
     #character
     #events = new Map()
+    #flags = {
+        interrupts: new Set()
+    }
 
     constructor (player, character) {
         this.#player = player
@@ -38,23 +41,43 @@ export class Record {
     get character () { return this.#character }
     get player () { return this.#player }
     get events () { return this.#events }
+    get flags () { return this.#flags }
+
+    get actor () {
+        return game.actors.getName(this.#character)
+    }
 
     /** 
      * @param {EventData[]} events 
      */
-    addEvents (events = []) {
-        if (!events.length) {
-            throw new TypeError("Cannot pass empty array into Record#addEvents")
-        }
-        for (const {id, hook, fn} of events) {
-            if (Object.values(Event).includes(hook)) {
-                this.#events.set(id, new EventData(id, hook, fn))
-            } else {
-                throw new Error(`${hook} is not a valid event.`)
-            }
+    setEvent (id, hook, fn) {
+        if (Object.values(Event).includes(hook)) {
+            this.#events.set(id, new EventData(id, hook, fn))
+        } else {
+            throw new Error(`${hook} is not a valid event.`)
         }
     }
 
+    /**
+     * @param {String} key 
+     * @param {*} value 
+     */
+    setFlag (key, value) {
+        Object.assign(this.#flags, { [key]: value })
+    }
+
+    /**
+     * @param {String} feature 
+     */
+    interrupt (feature) {
+        const arr = this.#flags.interrupts ?? []
+        this.setFlag('interrupts', new Set([ ...arr, feature ]))
+    }
+
+}
+
+export function getRecord (character) {
+    return game.UrsaMajor.records.get(character)
 }
 
 /** A mixin for creating an UrsaMajor Item.
@@ -69,7 +92,15 @@ export function UMaItemMixin (Base) {
          * @param {*?} options
          */
         async roll (options = {}) {
-            Hooks.call('UMa.roll', this)
+            const record = game.UrsaMajor.records.get(this.actor.name)
+            if (record) {
+                Hooks.call('UMa.roll', this, record)
+
+                if (record.flags.interrupts.has(this.name)) {
+                    return
+                }
+            }
+            
             return super.roll(options)
         }
 

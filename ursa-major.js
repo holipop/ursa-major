@@ -2,33 +2,18 @@
 // by Holipop
 
 /**
- * game.UrsaMajor - 
- * a readonly object containing the collection of methods and data for automating characters.
+ * ? REQUESTS:
  * 
- * UrsaMajor = { records }
+ * - Melograno
+ *  . Store 'Punchin' in the Numbers' somewhere.
+ *  ! 'Bring Bring Bring' ability should bring up an Adv./Disadv. Dialog
+ *  . 'Linked With Multiple Devices' lets Melo and another character see each other's
+ *    abilities, somehow proc this?
+ *  . 'Punchin' in the Numbers' 39 upgrade lets him roll another die under certain 
+ *    conditions, so having an additional button there to click would be cool.
  * 
- * UrsaMajor.records - 
- * a Map containing keys
- * 
- * ! a hook event first needs to be defined with `.on`, then it can be fired by `.call`
- */
-
-/**
- * Hooks can be fired:
- * - Before a roll
- * - After a roll
- * - From a macro
- */
-
-/**
- * 1. register a character via name, which adds to the UrsaMajor.records map with the id
- *    as the key and the Record as a value.
- * 2. extend the Item class such that it sends a hook call for that specific kit feature.
- */
-
-/**
- * When Soleil rolls BRRRRRING RING RING RING, UMaItem#roll calls a Hook before it posts: "ursa-major.Melograno.BRRRRRING RING RING RING"
- * Inside Melograno's Record, a Hook was defined for that event to post a dialog for advantage.
+ * - Vis
+ *  . Have a roll include a rollable table result
  */
 
 import * as config from './module/config.js'
@@ -43,7 +28,6 @@ Hooks.on('init', () => {
     Utils.log(config.UMa.ascii)
     Utils.log('Initializing Ursa Major Module!')
 
-    // Compose ACItem class.
     CONFIG.Item.documentClass = Types.UMaItemMixin(game.AC.documents.ACItem)
 
     const zip = (a, b) => a.map((entry, index) => [entry, b[index]]);
@@ -65,13 +49,18 @@ Hooks.on('ready', () => {
             continue
         }
 
-        Utils.group(`Hooking events for ${char}...`)
+        Utils.group(`Hooking events for ${char}.`)
 
         for (const [id, event] of record.events) {
-            Hooks.on(`UMa.${event.hook}`, event.fn)
+            Hooks.on(`UMa.${event.hook}`, (...args) => {
+                if (record.character != game.user.character.name) {
+                    return
+                }
+                Utils.log(`Firing '${event.id}' for ${record.character}.`)
+                event.fn(...args);
+            })
             Utils.log(`Hooked '${id}' event to '${event.hook}'.`)
         }
-
         console.groupEnd()
     }
 })
